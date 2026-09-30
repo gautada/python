@@ -1,8 +1,8 @@
-ARG DEBIAN_IMAGE=docker.io/gautada/debian:latest
+ARG DEBIAN_VERSION=13.6
 ARG UV_IMAGE=ghcr.io/astral-sh/uv:latest
 
 FROM ${UV_IMAGE} AS uv
-FROM ${DEBIAN_IMAGE} AS python
+FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS python
 
 # ╭――――――――――――――――――╮
 # │ METADATA         │
