@@ -3,7 +3,7 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:latest
 
 FROM ${UV_IMAGE} AS uv
 FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS python
-
+USER root
 # ╭――――――――――――――――――╮
 # │ METADATA         │
 # ╰――――――――――――――――――╯
@@ -101,3 +101,4 @@ RUN chmod 0755 /usr/local/bin/install-build-deps
 # gautada/debian. That's what keeps `kubectl exec ... -- python` working
 # (the pod stays alive under s6) and keeps this image predictable as a
 # FROM target for staged builds.
+USER $USER
