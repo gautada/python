@@ -3,7 +3,7 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:latest
 
 FROM ${UV_IMAGE} AS uv
 FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS python
-
+USER root
 # ╭――――――――――――――――――╮
 # │ METADATA         │
 # ╰――――――――――――――――――╯
@@ -35,10 +35,11 @@ RUN apt-get update \
 # ╰――――――――――――――――――――╯
 # Rename the base debian user to container based user.
 # Follows the same pattern as other gautada containers.
+ARG OLDUSER=debian
 ARG USER=monty
-RUN /usr/sbin/usermod -l $USER debian \
+RUN /usr/sbin/usermod -l $USER $OLDUSER \
  && /usr/sbin/usermod -d /home/$USER -m $USER \
- && /usr/sbin/groupmod -n $USER debian \
+ && /usr/sbin/groupmod -n $USER $OLDUSER \
  && PASSWORD="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | head -c 24)" \
  && printf '%s:%s\n' "$USER" "$PASSWORD" | /usr/sbin/chpasswd
 
@@ -100,3 +101,4 @@ RUN chmod 0755 /usr/local/bin/install-build-deps
 # gautada/debian. That's what keeps `kubectl exec ... -- python` working
 # (the pod stays alive under s6) and keeps this image predictable as a
 # FROM target for staged builds.
+USER $USER
